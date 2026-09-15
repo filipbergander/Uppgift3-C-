@@ -26,6 +26,7 @@ namespace Guestbook
 
         static void Main(string[] args)
         {
+            LoadPosts();
             // Visar menyn
             LoadMenu();
             // Läser in vilken tangent som klickades
@@ -80,8 +81,18 @@ namespace Guestbook
         {
             WriteLine("Nytt inlägg.");
             Write("Ange ägare: ");
-            string author = ReadLine();
-            // Validerar ägaren av inläggets namn
+            string? author = ReadLine();
+            // Validerar så att ägaren av inlägget inte är tom
+            if (string.IsNullOrEmpty(author))
+            {
+                WriteLine("Ägarens namn kan inte vara tomt...");
+                Write("\nTryck valfri tangent för att gå tillbaka till menyn...");
+                ReadKey(true);
+                Clear();
+                return;
+            }
+
+            // Validerar längden på namnet av ägaren
             if (author.Length < 3 | author.Length > 15)
             {
                 WriteLine("\nÄgarens namn behöver vara mellan tre till femton tecken!");
@@ -90,7 +101,18 @@ namespace Guestbook
                 return;
             }
             Write("Skriv inlägg: ");
-            string content = ReadLine();
+            string? content = ReadLine();
+
+            // Validerar så att inlägget inte är tomt
+            if (string.IsNullOrEmpty(content))
+            {
+                WriteLine("Ett inlägg kan inte vara tomt...");
+                Write("\nTryck valfri tangent för att gå tillbaka till menyn...");
+                ReadKey(true);
+                Clear();
+                return;
+            }
+
             // Validerar längden på inlägget
             if (content.Length > 250)
             {
@@ -102,26 +124,37 @@ namespace Guestbook
                 ReadKey(true);
                 return;
             }
-            // Validerar så att inlägget inte är tomt
-            if (string.IsNullOrEmpty(content))
-            {
-                WriteLine("Ett inlägg kan inte vara tomt...");
-                Write("\nTryck valfri tangent för att gå tillbaka till menyn...");
-                ReadKey(true);
-                Clear();
-                return;
-            }
+
             // Hämtar in vad som angetts för skribent och inlägget
             NewPost newPost = new NewPost { Author = author, Content = content };
-            WriteLine($"Skribenten: {newPost.Author} och innehållet: {newPost.Content}");
+            //WriteLine($"Skribenten: {newPost.Author} och innehållet: {newPost.Content}");
             // Sparar ned inlägget till listan
             GuestBookPosts.Add(newPost);
             string jsonString = JsonSerializer.Serialize(GuestBookPosts);
             File.WriteAllText(savePostSrc, jsonString);
+
+            // Utskrift efter att man skapat ett inlägg
+            WriteLine($"\nEtt nytt inlägg har skapats av: {author}");
+            Thread.Sleep(1300);
+            WriteLine($"Programmet återgår till menyn...");
+            Thread.Sleep(1300);
+            Clear();
         }
 
         // Hämtar sparade inlägg
-        static void LoadPosts() { }
+        static void LoadPosts()
+        {
+            if (File.Exists(savePostSrc))
+            {
+                string jsonString = File.ReadAllText(savePostSrc);
+                List<NewPost> savedPosts =
+                    JsonSerializer.Deserialize<List<NewPost>>(jsonString) ?? new List<NewPost>();
+                for (int i = 0; i < savedPosts.Count; i++)
+                {
+                    WriteLine($"[{i}] {savedPosts[i].Author} - {savedPosts[i].Content}");
+                }
+            }
+        }
 
         // Tar bort ett sparat inlägg
         static void RemovePost() { }
