@@ -11,6 +11,7 @@
 *
 */
 
+using System.Collections.Generic;
 using Post;
 using static System.Console;
 
@@ -25,6 +26,42 @@ namespace Guestbook
         {
             // Visar menyn
             LoadMenu();
+            // Läser in vilken tangent som klickades
+            ConsoleKeyInfo keyClicked = ReadKey(true);
+            // Utför olika metoder i programmet när olika knappar klickas, 1/2/X
+            switch (keyClicked.Key)
+            {
+                case ConsoleKey.D1: // Skapar ett nytt inlägg när man klickar på 1
+                case ConsoleKey.NumPad1:
+                    Clear();
+                    CreatePost();
+                    break;
+                case ConsoleKey.D2: // Går till metoden för att ta bort en post vid klick på 2
+                case ConsoleKey.NumPad2:
+                    Clear();
+                    RemovePost();
+                    break;
+                case ConsoleKey.X: // Stänger ned programmet när man klickar på tangenten X
+                    WriteLine("\nProgrammet börjar stängas ned...");
+                    Thread.Sleep(1000);
+                    WriteLine("3...");
+                    Thread.Sleep(700);
+                    WriteLine("2...");
+                    Thread.Sleep(700);
+                    WriteLine("1...");
+                    Thread.Sleep(700);
+                    WriteLine("Programmet avslutas!");
+                    Thread.Sleep(900);
+                    Clear();
+                    break;
+                default: // Om man råkar klicka en annan knapp
+                    Clear();
+                    WriteLine("Okänt knappval...");
+                    WriteLine("Alternativen 1, 2 eller X finns i gästboken.");
+                    Write("\nTryck valfri tangent för att gå tillbaka till menyn...");
+                    ReadKey(true);
+                    break;
+            }
         }
 
         // Laddar menyn för gästbokens framsida
@@ -35,5 +72,14 @@ namespace Guestbook
             WriteLine("2. Ta bort inlägg\n");
             WriteLine("X. Avsluta\n");
         }
+
+        // Skapar ett nytt inlägg i gästboken
+        static void CreatePost() { }
+
+        // Hämtar sparade inlägg
+        static void LoadPosts() { }
+
+        // Tar bort ett sparat inlägg
+        static void RemovePost() { }
     }
 }
