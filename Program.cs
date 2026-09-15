@@ -12,6 +12,7 @@
 */
 
 using System.Collections.Generic;
+using System.Text.Json;
 using Post;
 using static System.Console;
 
@@ -21,6 +22,7 @@ namespace Guestbook
     {
         // Hämtar in hur ett inlägg ska se ut och sparar ned till en lista
         static List<NewPost> GuestBookPosts = new List<NewPost>();
+        static string savePostSrc = "GuestbookPosts.json";
 
         static void Main(string[] args)
         {
@@ -112,6 +114,10 @@ namespace Guestbook
             // Hämtar in vad som angetts för skribent och inlägget
             NewPost newPost = new NewPost { Author = author, Content = content };
             WriteLine($"Skribenten: {newPost.Author} och innehållet: {newPost.Content}");
+            // Sparar ned inlägget till listan
+            GuestBookPosts.Add(newPost);
+            string jsonString = JsonSerializer.Serialize(GuestBookPosts);
+            File.WriteAllText(savePostSrc, jsonString);
         }
 
         // Hämtar sparade inlägg
