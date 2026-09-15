@@ -74,7 +74,42 @@ namespace Guestbook
         }
 
         // Skapar ett nytt inlägg i gästboken
-        static void CreatePost() { }
+        static void CreatePost()
+        {
+            WriteLine("Nytt inlägg.");
+            Write("Ange ägare: ");
+            string author = ReadLine();
+            // Validerar ägaren av inläggets namn
+            if (author.Length < 3 | author.Length > 15)
+            {
+                WriteLine("\nÄgarens namn behöver vara mellan tre till femton tecken!");
+                Write("Tryck valfri tangent för att gå tillbaka till menyn...");
+                ReadKey(true);
+                return;
+            }
+            Write("Skriv inlägg: ");
+            string content = ReadLine();
+            // Validerar längden på inlägget
+            if (content.Length > 250)
+            {
+                WriteLine("----------------------------------------");
+                WriteLine(
+                    $"Inlägget är för långt, max 250 tecken! Inläggets längd nu: {content.Length} tecken..."
+                );
+                Write("\nTryck valfri tangent för att gå tillbaka till menyn...");
+                ReadKey(true);
+                return;
+            }
+            // Validerar så att inlägget inte är tomt
+            if (string.IsNullOrEmpty(content))
+            {
+                WriteLine("Ett inlägg kan inte vara tomt...");
+                Write("\nTryck valfri tangent för att gå tillbaka till menyn...");
+                ReadKey(true);
+                Clear();
+                return;
+            }
+        }
 
         // Hämtar sparade inlägg
         static void LoadPosts() { }
