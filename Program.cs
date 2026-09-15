@@ -109,6 +109,9 @@ namespace Guestbook
                 Clear();
                 return;
             }
+            // Hämtar in vad som angetts för skribent och inlägget
+            NewPost newPost = new NewPost { Author = author, Content = content };
+            WriteLine($"Skribenten: {newPost.Author} och innehållet: {newPost.Content}");
         }
 
         // Hämtar sparade inlägg
