@@ -26,44 +26,53 @@ namespace Guestbook
 
         static void Main(string[] args)
         {
-            LoadPosts();
-            // Visar menyn
-            LoadMenu();
-            // Läser in vilken tangent som klickades
-            ConsoleKeyInfo keyClicked = ReadKey(true);
-            // Utför olika metoder i programmet när olika knappar klickas, 1/2/X
-            switch (keyClicked.Key)
+            LoadPosts(); // Hämtar in sparade inlägg
+
+            // Håller koll på om programmet ska vara igång eller inte
+            bool programOn = true;
+            while (programOn)
             {
-                case ConsoleKey.D1: // Skapar ett nytt inlägg när man klickar på 1
-                case ConsoleKey.NumPad1:
-                    Clear();
-                    CreatePost();
-                    break;
-                case ConsoleKey.D2: // Går till metoden för att ta bort en post vid klick på 2
-                case ConsoleKey.NumPad2:
-                    Clear();
-                    RemovePost();
-                    break;
-                case ConsoleKey.X: // Stänger ned programmet när man klickar på tangenten X
-                    WriteLine("\nProgrammet börjar stängas ned...");
-                    Thread.Sleep(1000);
-                    WriteLine("3...");
-                    Thread.Sleep(700);
-                    WriteLine("2...");
-                    Thread.Sleep(700);
-                    WriteLine("1...");
-                    Thread.Sleep(700);
-                    WriteLine("Programmet avslutas!");
-                    Thread.Sleep(900);
-                    Clear();
-                    break;
-                default: // Om man råkar klicka en annan knapp
-                    Clear();
-                    WriteLine("Okänt knappval...");
-                    WriteLine("Alternativen 1, 2 eller X finns i gästboken.");
-                    Write("\nTryck valfri tangent för att gå tillbaka till menyn...");
-                    ReadKey(true);
-                    break;
+                Clear(); // Återställer fönstret och tar bort tidigare text
+                LoadMenu(); // Visar menyn
+                LoadPosts(); // Hämtar in sparade inlägg
+
+                // Läser in vilken tangent som klickades
+                ConsoleKeyInfo keyClicked = ReadKey(true);
+                // Utför olika metoder i programmet när olika knappar klickas, 1/2/X
+                switch (keyClicked.Key)
+                {
+                    case ConsoleKey.D1: // Skapar ett nytt inlägg när man klickar på 1
+                    case ConsoleKey.NumPad1:
+                        Clear();
+                        CreatePost();
+                        break;
+                    case ConsoleKey.D2: // Går till metoden för att ta bort en post vid klick på 2
+                    case ConsoleKey.NumPad2:
+                        Clear();
+                        RemovePost();
+                        break;
+                    case ConsoleKey.X: // Stänger ned programmet när man klickar på tangenten X
+                        WriteLine("\nProgrammet börjar stängas ned...");
+                        Thread.Sleep(1000);
+                        WriteLine("3...");
+                        Thread.Sleep(700);
+                        WriteLine("2...");
+                        Thread.Sleep(700);
+                        WriteLine("1...");
+                        Thread.Sleep(700);
+                        WriteLine("Programmet avslutas!");
+                        Thread.Sleep(900);
+                        Clear();
+                        programOn = false; // Hoppar ut ur programmet -> stänger av loopen
+                        break;
+                    default: // Om man råkar klicka en annan knapp
+                        Clear();
+                        WriteLine("Okänt knappval...");
+                        WriteLine("Alternativen 1, 2 eller X finns i gästboken.");
+                        Write("\nTryck valfri tangent för att gå tillbaka till menyn...");
+                        ReadKey(true);
+                        break;
+                }
             }
         }
 
@@ -144,19 +153,71 @@ namespace Guestbook
         // Hämtar sparade inlägg
         static void LoadPosts()
         {
-            if (File.Exists(savePostSrc))
+            // Metoden gör inget om ingen json-fil finns nedsparad än
+            if (!File.Exists(savePostSrc))
             {
-                string jsonString = File.ReadAllText(savePostSrc);
-                List<NewPost> savedPosts =
-                    JsonSerializer.Deserialize<List<NewPost>>(jsonString) ?? new List<NewPost>();
-                for (int i = 0; i < savedPosts.Count; i++)
-                {
-                    WriteLine($"[{i}] {savedPosts[i].Author} - {savedPosts[i].Content}");
-                }
+                return;
+            }
+            // Läser in texten inom json-filen
+            string jsonString = File.ReadAllText(savePostSrc);
+
+            // Provar deserialiserar texten i json-filen till en newpost-lista, annars en tom lista
+            GuestBookPosts = JsonSerializer.Deserialize<List<NewPost>>(jsonString) ?? [];
+
+            // Skriver ut varje inlägg
+            for (int i = 0; i < GuestBookPosts.Count; i++)
+            {
+                WriteLine($"[{i}] {GuestBookPosts[i].Author} - {GuestBookPosts[i].Content}");
             }
         }
 
         // Tar bort ett sparat inlägg
-        static void RemovePost() { }
+        static void RemovePost()
+        {
+            // Om inga sparade inlägg finns
+            if (GuestBookPosts.Count == 0)
+            {
+                WriteLine("Inga inlägg finns lagrade!");
+                Write("\nTryck valfri tangent för att gå tillbaka till menyn...");
+                ReadKey(true);
+                return;
+            }
+            // Annars, går vidare och skriver ut inläggen
+            Write("Vilket inlägg vill du radera?\n");
+            for (int i = 0; i < GuestBookPosts.Count; i++)
+            {
+                WriteLine($"[{i}] {GuestBookPosts[i].Author} - {GuestBookPosts[i].Content}");
+            }
+            Write("\nAnge siffra för inlägget som du vill radera och tryck enter: ");
+            string? indexInput = ReadLine();
+            // Validerar input och tar bort ett inlägg om input är korrekt
+            if (string.IsNullOrEmpty(indexInput))
+            {
+                WriteLine("Ingen siffra angavs..");
+            }
+            if (
+                int.TryParse(indexInput, out int index)
+                && index >= 0
+                && index < GuestBookPosts.Count
+            )
+            {
+                // Sparar ned den nya listan med inlägg, efter radering
+                GuestBookPosts.RemoveAt(index);
+                string jsonString = JsonSerializer.Serialize(GuestBookPosts);
+                File.WriteAllText(savePostSrc, jsonString);
+                WriteLine($"Inlägget raderades!");
+                Thread.Sleep(1000);
+                Clear();
+            }
+            // Felhantering
+            else
+            {
+                WriteLine("Ogilitgt knappval...");
+                WriteLine($"Du behöver ange en siffra mellan 0 och {GuestBookPosts.Count - 1}.");
+                Write("\nTryck valfri tangent för att gå tillbaka till menyn...");
+                ReadKey(true);
+                Clear();
+            }
+        }
     }
 }
