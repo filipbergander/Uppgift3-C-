@@ -22,15 +22,12 @@ namespace Guestbook
     {
         static void Main(string[] args)
         {
-
-            // Clear();
-            //GuestBookPost.ShowPosts(); // Hämtar in sparade inlägg när programmet startar
-
             // Håller koll på om programmet ska vara igång eller inte
             bool programOn = true;
             while (programOn)
             {
                 Clear(); // Återställer "konsoll-fönstret" och tar bort tidigare text
+                CursorVisible = false;
                 LoadMenu(); // Visar menyn
 
                 // Läser in vilken tangent som klickades
@@ -41,11 +38,13 @@ namespace Guestbook
                     case ConsoleKey.D1: // Går till menyn för att skapa ett inlägg -> 1
                     case ConsoleKey.NumPad1:
                         Clear();
+                        CursorVisible = true;
                         ValidatePost.ValidateCreatePost();
                         break;
                     case ConsoleKey.D2: // Går till menyn för att ta bort ett inlägg -> 2
                     case ConsoleKey.NumPad2:
                         Clear();
+                        CursorVisible = true;
                         ValidatePost.ValidateDeletePost();
                         break;
                     case ConsoleKey.X: // Stänger ned programmet -> X
@@ -54,6 +53,7 @@ namespace Guestbook
                         break;
                     default: // Om man råkar trycka på en annan tangent
                         Clear();
+                      CursorVisible = true;
                         WriteLine("Okänt knappval...");
                         WriteLine("Alternativen 1, 2 eller X finns i gästboken.");
                         Write("\nTryck valfri tangent för att gå tillbaka till menyn...");

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Posts
 {
-    // Skapar klass som definierar ett inlägg med skribent och innehåll
+    // Klass som definierar ett inlägg med skribent och innehåll via get och set
     public class Post
     {
         public required string Author {get; set;}

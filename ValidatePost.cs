@@ -13,6 +13,7 @@ namespace Posts
         public static void ValidateCreatePost()
         {
             var posts = GuestBookPost.LoadPosts(); // Hämtar in listan av inlägg
+            // Skriver ut textmeddelande när man ska till att skapa nytt inlägg
             void printHeader()
             {
                 WriteLine("Nytt inlägg i gästboken");
@@ -20,11 +21,11 @@ namespace Posts
             }
             printHeader();
             string? author;
-            while (true)
+            while (true) // Validerar ägare av inlägget
             {
                 Write("Ange ägare: ");
-                author = ReadLine().Trim();
-
+                author = (ReadLine() ?? "").Trim();
+                // Återgår till menyn om man skriver esc
                 if (author.ToLower() == "esc")
                 {
                     Clear();
@@ -57,11 +58,11 @@ namespace Posts
                 break;
             }
             string? content;
-            while (true)
+            while (true) // Validerar texten till inlägget
             {
                 Write("Skriv inlägg: ");
                 content = ReadLine();
-
+                // Återgår till menyn om man skriver esc
                 if (content == "esc")
                 {
                     Clear();
@@ -96,6 +97,7 @@ namespace Posts
                 }
                 break;
             }
+            // Sparar det nya inlägget och lägger till i listan och json-filen
             Post post = new Post { Author = author, Content = content };
             posts.Add(post);
             GuestBookPost.SavePost(posts);
@@ -121,17 +123,16 @@ namespace Posts
                 ReadKey(true);
                 return;
             }
-
+            // Skriver ut text i konsollen när man klickat för att radera ett inlägg
             void printHeader()
             {
                 WriteLine("Radera inlägg från gästboken");
                 WriteLine("Skriv ESC för att avbryta\n");
-                // Annars, går vidare och skriver ut inläggen
                 Write("Vilket inlägg vill du radera?\n");
                 GuestBookPost.ShowPosts();
             }
             printHeader();
-
+            // Validerar input, samt stänger av programmet när man skriver esc
             while (true)
             {
                 Write("\nAnge siffra för inlägget och tryck enter: ");
@@ -174,12 +175,13 @@ namespace Posts
                     printHeader();
                     continue;
                 }
+                // Vid lyckad radering -> Byter färg på konsollens text till mörkgrön
                 ForegroundColor = ConsoleColor.DarkGreen;
                 GuestBookPost.DeletePostData(index); // Skickar med siffran som angetts
                 WriteLine($"Inlägget raderades!");
                 ResetColor();
                 WriteLine();
-                Thread.Sleep(1000);
+                Thread.Sleep(1000); // Hoppar tillbala till menyn efter 1 sek
                 Clear();
                 return;
             }
