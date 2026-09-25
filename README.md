@@ -15,7 +15,9 @@ I applikationen navigerar man med tangentbordet -> tangenterna 1, 2 och X
 **Program.cs**: Programmet startar upp här i metoden Main och utgår från denna fil.   
 **ValidatePost.cs**: All validering för att skapa och radera ett inlägg.    
 **Post.cs**: Definierar ett schema för ett inlägg med Author och Content via get, set.    
-**GuestbookPost.cs**: Metoder för att spara inlägg, visa inlägg, radera och hämta inlägg från "databasen", GuestbookPosts.json.   
-**GuestbookPosts.json**: Inlägg sparas ned i denna fil.
+**IPostStorage.cs**: Interface för att använda metoderna till att spara och ladda inlägg.     
+**GuestbookPost.cs**: Metoder för att lägga till inlägg, visa inlägg, radera och hämta inlägg.       
+**JsonPostStorage.cs**: Laddar och serialiserar inlägg -> json-data.    
+**guestbookposts.json**: Inlägg sparas ned i denna fil.    
 
 *Filip Bergander HT2026, Mittuniversitetet*
