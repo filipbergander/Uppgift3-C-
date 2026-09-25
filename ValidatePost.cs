@@ -9,10 +9,17 @@ namespace Posts
 {
     public class ValidatePost
     {
-        // Skapar ett nytt inlägg, efter validering
-        public static void ValidateCreatePost()
+        private readonly GuestBookPost guestBook;
+
+        public ValidatePost(GuestBookPost guestBook)
         {
-            var posts = GuestBookPost.LoadPosts(); // Hämtar in listan av inlägg
+            this.guestBook = guestBook;
+        }
+
+        // Skapar ett nytt inlägg, efter validering
+        public void ValidateCreatePost()
+        {
+            //var posts = guestBook.posts; // Hämtar in listan av inlägg
             // Skriver ut textmeddelande när man ska till att skapa nytt inlägg
             void printHeader()
             {
@@ -99,8 +106,7 @@ namespace Posts
             }
             // Sparar det nya inlägget och lägger till i listan och json-filen
             Post post = new Post { Author = author, Content = content };
-            posts.Add(post);
-            GuestBookPost.SavePost(posts);
+            guestBook.AddPost(post);
             ForegroundColor = ConsoleColor.DarkGreen;
             WriteLine("Nytt inlägg skapades!");
             ResetColor();
@@ -110,10 +116,10 @@ namespace Posts
 
         // Tar bort ett inlägg från programmet och ur "databasen" -> json-filen
 
-        public static void ValidateDeletePost()
+        public void ValidateDeletePost()
         {
             // Hämtar in alla inlägg
-            var posts = GuestBookPost.LoadPosts();
+            var posts = guestBook.Posts;
             Clear();
             // Om inga sparade inlägg finns
             if (posts.Count == 0)
@@ -129,7 +135,7 @@ namespace Posts
                 WriteLine("Radera inlägg från gästboken");
                 WriteLine("Skriv ESC för att avbryta\n");
                 Write("Vilket inlägg vill du radera?\n");
-                GuestBookPost.ShowPosts();
+                guestBook.ShowPosts();
             }
             printHeader();
             // Validerar input, samt stänger av programmet när man skriver esc
@@ -177,7 +183,7 @@ namespace Posts
                 }
                 // Vid lyckad radering -> Byter färg på konsollens text till mörkgrön
                 ForegroundColor = ConsoleColor.DarkGreen;
-                GuestBookPost.DeletePostData(index); // Skickar med siffran som angetts
+                guestBook.DeletePostData(index); // Skickar med siffran som angetts
                 WriteLine($"Inlägget raderades!");
                 ResetColor();
                 WriteLine();

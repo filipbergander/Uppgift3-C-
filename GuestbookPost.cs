@@ -10,52 +10,39 @@ namespace Posts
     public class GuestBookPost
     {
         // Hämtar in hur ett inlägg ska se ut och sparar ned som en lista
-        static List<Post> posts = new List<Post>();
+        public List<Post> Posts; // Listan ändras när metoderna nedan körs
 
-        // Filen där inläggen sparas
-        static string savePostSrc = @"GuestbookPosts.json";
+        // Sparar en variabel av interfacet
+        public readonly IPostStorage postStorage;
 
-        // Laddar in inlägg
-        public static List<Post> LoadPosts()
+        // Konstruktor
+        public GuestBookPost(IPostStorage postStorage)
         {
-            // Metoden gör inget om ingen json-fil finns nedsparad än
-            if (!File.Exists(savePostSrc))
-            {
-                return new List<Post>();
-            }
+            this.postStorage = postStorage;
+            Posts = postStorage.LoadPosts(); // Hämtar in listan av sparade inlägg
+        }
 
-            // Läser in texten inom json-filen
-            string jsonString = File.ReadAllText(savePostSrc);
-
-            // Provar deserialiserar texten i json-filen till en Post-lista, annars en tom lista
-            posts = JsonSerializer.Deserialize<List<Post>>(jsonString) ?? [];
-            return posts;
+        // Lägger till nya inlägg i listan och sparar till "json-filen" eller den fil som ska användas
+        public void AddPost(Post post)
+        {
+            Posts.Add(post); // Lägger till inlägget i listan
+            postStorage.SavePost(Posts); // Sparar ned den nya listan
         }
 
         // Raderar ett inlägg
-        public static void DeletePostData(int index)
+        public void DeletePostData(int index)
         {
-            posts.RemoveAt(index); // Tar bort inlägg i listan genom indexet som angetts
-            SavePost(posts); // Sparar ned den nya listan
-        }
-
-        // Sparar ett inlägg till json-fil
-        public static void SavePost(List<Post> post)
-        {
-            string jsonString = JsonSerializer.Serialize(post);
-            File.WriteAllText(savePostSrc, jsonString);
+            Posts.RemoveAt(index); // Tar bort inlägg i listan genom indexet som angetts
+            postStorage.SavePost(Posts); // Sparar ned den nya listan
         }
 
         // Visar alla sparade inlägg i gränssnittet
-        public static void ShowPosts()
+        public void ShowPosts()
         {
-            // Hämtar in alla lagrade inlägg
-            var posts = LoadPosts();
-
             // Skriver ut varje inlägg
-            for (int i = 0; i < posts.Count; i++)
+            for (int i = 0; i < Posts.Count; i++)
             {
-                WriteLine($"[{i}] {posts[i].Author} - {posts[i].Content}");
+                WriteLine($"[{i}] {Posts[i].Author} - {Posts[i].Content}");
             }
         }
     }

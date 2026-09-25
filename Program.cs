@@ -20,8 +20,19 @@ namespace Guestbook
 {
     class Program
     {
+        private static GuestBookPost guestBook = null!;
+
         static void Main(string[] args)
         {
+            // Lagrar instans av JsonPostStorage genom interfacet IPostStorage för att spara som jsondata
+            IPostStorage postStorage = new JsonPostStorage("guestbookposts.json");
+
+            // Lagrar instans av GuestBookPost genom poststorage
+            guestBook = new GuestBookPost(postStorage);
+
+            // Lagrar instans av ValidatePost genom guestbook
+            ValidatePost validatePost = new ValidatePost(guestBook);
+
             // Håller koll på om programmet ska vara igång eller inte
             bool programOn = true;
             while (programOn)
@@ -32,6 +43,7 @@ namespace Guestbook
 
                 // Läser in vilken tangent som klickades
                 ConsoleKeyInfo keyClicked = ReadKey(true);
+
                 // Utför olika metoder i programmet när olika tangenter trycks (1/2/X)
                 switch (keyClicked.Key)
                 {
@@ -39,13 +51,13 @@ namespace Guestbook
                     case ConsoleKey.NumPad1:
                         Clear();
                         CursorVisible = true;
-                        ValidatePost.ValidateCreatePost();
+                        validatePost.ValidateCreatePost();
                         break;
                     case ConsoleKey.D2: // Går till menyn för att ta bort ett inlägg -> 2
                     case ConsoleKey.NumPad2:
                         Clear();
                         CursorVisible = true;
-                        ValidatePost.ValidateDeletePost();
+                        validatePost.ValidateDeletePost();
                         break;
                     case ConsoleKey.X: // Stänger ned programmet -> X
                         QuitProgram();
@@ -53,7 +65,7 @@ namespace Guestbook
                         break;
                     default: // Om man råkar trycka på en annan tangent
                         Clear();
-                      CursorVisible = true;
+                        CursorVisible = true;
                         WriteLine("Okänt knappval...");
                         WriteLine("Alternativen 1, 2 eller X finns i gästboken.");
                         Write("\nTryck valfri tangent för att gå tillbaka till menyn...");
@@ -72,7 +84,7 @@ namespace Guestbook
             WriteLine("2. Ta bort inlägg\n");
             WriteLine("X. Avsluta\n");
 
-            GuestBookPost.ShowPosts(); // Hämtar in sparade inlägg när programmet loopas om
+            guestBook.ShowPosts(); // Hämtar in sparade inlägg när programmet loopas om
         }
 
         // Stänger ned programmet
