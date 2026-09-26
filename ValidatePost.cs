@@ -36,7 +36,10 @@ namespace Posts
                 if (author.ToLower() == "esc")
                 {
                     Clear();
+                    ForegroundColor = ConsoleColor.DarkYellow;
                     WriteLine("\n----- Avbröt, återgår till menyn -----");
+                    ResetColor();
+                    WriteLine();
                     Thread.Sleep(1000);
                     Clear();
                     return;
@@ -73,7 +76,10 @@ namespace Posts
                 if (content == "esc")
                 {
                     Clear();
+                    ForegroundColor = ConsoleColor.DarkYellow;
                     WriteLine("\n----- Avbröt, återgår till menyn -----");
+                    ResetColor();
+                    WriteLine();
                     Thread.Sleep(1000);
                     Clear();
                     return;
@@ -147,7 +153,10 @@ namespace Posts
                 if (indexInput == "esc")
                 {
                     Clear();
+                    ForegroundColor = ConsoleColor.DarkYellow;
                     WriteLine("\n----- Avbröt, återgår till menyn -----");
+                    ResetColor();
+                    WriteLine();
                     Thread.Sleep(1000);
                     Clear();
                     return;

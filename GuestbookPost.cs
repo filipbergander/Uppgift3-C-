@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using static System.Console;
+using Microsoft.Data.Sqlite;
 
 namespace Posts
 {
@@ -13,27 +14,27 @@ namespace Posts
         public List<Post> Posts; // Listan ändras när metoderna nedan körs
 
         // Sparar en variabel av interfacet
-        public readonly IPostStorage postStorage;
+        public readonly IPostStorage postSrc;
 
         // Konstruktor
-        public GuestBookPost(IPostStorage postStorage)
+        public GuestBookPost(IPostStorage postSrc)
         {
-            this.postStorage = postStorage;
-            Posts = postStorage.LoadPosts(); // Hämtar in listan av sparade inlägg
+            this.postSrc = postSrc;
+            Posts = postSrc.LoadPosts(); // Hämtar in listan av sparade inlägg
         }
 
         // Lägger till nya inlägg i listan och sparar till "json-filen" eller den fil som ska användas
         public void AddPost(Post post)
         {
             Posts.Add(post); // Lägger till inlägget i listan
-            postStorage.SavePost(Posts); // Sparar ned den nya listan
+            postSrc.SavePost(Posts); // Sparar ned den nya listan
         }
 
         // Raderar ett inlägg
         public void DeletePostData(int index)
         {
             Posts.RemoveAt(index); // Tar bort inlägg i listan genom indexet som angetts
-            postStorage.SavePost(Posts); // Sparar ned den nya listan
+            postSrc.SavePost(Posts); // Sparar ned den nya listan
         }
 
         // Visar alla sparade inlägg i gränssnittet

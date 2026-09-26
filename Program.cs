@@ -25,10 +25,10 @@ namespace Guestbook
         static void Main(string[] args)
         {
             // Lagrar instans av JsonPostStorage genom interfacet IPostStorage för att spara som jsondata
-            IPostStorage postStorage = new JsonPostStorage("guestbookposts.json");
-
-            // Lagrar instans av GuestBookPost genom poststorage
-            guestBook = new GuestBookPost(postStorage);
+            IPostStorage postSrc = new JsonPostStorage("guestbookposts.json");
+            //IPostStorage postSrc = new SqlitePostStorage("guestbookposts.db");
+            // Lagrar instans av GuestBookPost genom json-filen
+            guestBook = new GuestBookPost(postSrc);
 
             // Lagrar instans av ValidatePost genom guestbook
             ValidatePost validatePost = new ValidatePost(guestBook);

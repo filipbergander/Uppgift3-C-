@@ -10,25 +10,25 @@ namespace Posts
     public class JsonPostStorage : IPostStorage
     {
         // Filen där inläggen sparas
-        private readonly string postStorage;
+        private readonly string postSrc;
 
         // Tar emot och ger filnamnet där inläggen ska sparas
-        public JsonPostStorage(string postStorage)
+        public JsonPostStorage(string postSrc)
         {
-            this.postStorage = postStorage;
+            this.postSrc = postSrc;
         }
 
         // Laddar in alla sparade inlägg
         public List<Post> LoadPosts()
         {
             // Metoden returnerar en tom lista om ingen json-fil finns nedsparad än
-            if (!File.Exists(postStorage))
+            if (!File.Exists(postSrc))
             {
                 return new List<Post>();
             }
 
             // Läser in texten inom json-filen
-            string jsonString = File.ReadAllText(postStorage);
+            string jsonString = File.ReadAllText(postSrc);
 
             // Provar deserialiserar texten i json-filen till en Post-lista, annars en tom lista
             List<Post> posts =
@@ -40,7 +40,7 @@ namespace Posts
         public void SavePost(List<Post> post)
         {
             string jsonString = JsonSerializer.Serialize(post);
-            File.WriteAllText(postStorage, jsonString);
+            File.WriteAllText(postSrc, jsonString);
         }
     }
 }
