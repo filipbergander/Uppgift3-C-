@@ -11,15 +11,15 @@ namespace Posts
     {
         private readonly GuestBookPost guestBook;
 
+        // Konstruktor
         public ValidatePost(GuestBookPost guestBook)
         {
             this.guestBook = guestBook;
         }
 
-        // Skapar ett nytt inlägg, efter validering
+        // Validerar inupt när ett nytt inlägg ska skapas
         public void ValidateCreatePost()
         {
-            //var posts = guestBook.posts; // Hämtar in listan av inlägg
             // Skriver ut textmeddelande när man ska till att skapa nytt inlägg
             void printHeader()
             {
@@ -120,7 +120,7 @@ namespace Posts
             Thread.Sleep(1000);
         }
 
-        // Tar bort ett inlägg från programmet och ur "databasen" -> json-filen
+        // Validerar input när ett inlägg ska raderas
 
         public void ValidateDeletePost()
         {
